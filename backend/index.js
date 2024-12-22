@@ -1,8 +1,7 @@
 const express = require('express')
 const chalk = require('chalk')
 const mongoose = require('mongoose')
-const DEFAULT_TEST = require('./constants/test')
-const Request = require('./models/Request')
+
 const cors = require('cors')
 
 const { addRequest, getRequests } = require('./requests.controller')
@@ -25,10 +24,15 @@ app.get('/requests', async (req, res) => {
 
 	res.json(requests)
 })
+app.get('/users', async (req, res) => {
+	const users = await getUser()
+
+	res.json(requests)
+})
 
 app.post('/requests', async (req, res) => {
 	const { date, fullName, problem, phone } = req.body
-
+	console.log(req.body)
 	const newRequest = await addRequest(date, fullName, problem, phone)
 	res.json(newRequest)
 })

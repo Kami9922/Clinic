@@ -2,10 +2,16 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const RequestSchema = new Schema({
-	date: Object,
-	fullName: String,
+	date: {
+		type: String,
+	},
+	fullName: {
+		type: String,
+	},
+	phone: {
+		type: Number,
+	},
 	problem: String,
-	phone: Number,
 })
 
 const Request = mongoose.model('Request', RequestSchema)

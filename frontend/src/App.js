@@ -1,5 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
+import { Login } from './pages/login/login'
+import { RequestsTable } from './pages/requests-table/requests-table'
+import { Request } from './pages/request/request'
 
 const AppColumn = styled.div`
 	display: flex;
