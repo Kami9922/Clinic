@@ -23,7 +23,7 @@ const App = () => {
 			<Page>
 				<Routes>
 					<Route
-						path='/request'
+						path='/'
 						element={<Request />}
 					/>
 					<Route

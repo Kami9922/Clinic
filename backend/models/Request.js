@@ -4,12 +4,15 @@ const { Schema } = mongoose
 const RequestSchema = new Schema({
 	date: {
 		type: String,
+		required: true,
 	},
 	fullName: {
 		type: String,
+		required: true,
 	},
 	phone: {
 		type: Number,
+		required: true,
 	},
 	problem: String,
 })

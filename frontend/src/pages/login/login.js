@@ -3,14 +3,20 @@ import { Button } from '../../components/button'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
+import { loginUser } from '../../api/loginUser'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const authFormSchema = yup.object().shape({
-	login: yup
+	email: yup
 		.string()
-		.required('Заполните логин')
-		.matches(/^\w+$/, 'Неверный логин. Допускаются только буквы и цифры')
-		.min(3, 'Неверный логин. Минимум 3 символа')
-		.max(15, 'Неверный логин. Максмиум 15 символов'),
+		.required('Заполните почту')
+		.matches(
+			/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,}$/i,
+			'Неверная почта. Допускаются только буквы и цифры'
+		)
+		.min(3, 'Неверная почта. Минимум 3 символа')
+		.max(15, 'Неверная почта. Максмиум 15 символов'),
 	password: yup
 		.string()
 		.required('Заполните пароль')
@@ -23,23 +29,29 @@ const authFormSchema = yup.object().shape({
 })
 
 const LoginContainer = ({ className }) => {
+	const navigate = useNavigate()
+	const [errorMessage, setErrorMessage] = useState('')
 	const {
 		register,
-		// reset,
 		handleSubmit,
-		// formState: { errors },
+		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			login: '',
+			email: '',
 			password: '',
 		},
 		resolver: yupResolver(authFormSchema),
 	})
 
-	const onSubmit = ({ login, password }) => {
-		// server.authorize(login, password).then(({ error, res }) => {
-		// dispatch(setUser(res))
-		// })
+	const onSubmit = async ({ email, password }) => {
+		await loginUser(email, password).then((res) => {
+			if (res.ok) {
+				navigate('/requests')
+			}
+			if (!res.ok) {
+				setErrorMessage('Данные введены неправильно!')
+			}
+		})
 	}
 
 	return (
@@ -49,26 +61,26 @@ const LoginContainer = ({ className }) => {
 				className='login-form'
 				onSubmit={handleSubmit(onSubmit)}>
 				<input
-					type='text'
-					placeholder='Логин...'
-					{...register('login', {
-						onChange: () => {},
-					})}
+					type='email'
+					name='email'
+					placeholder='Почта...'
+					{...register('email')}
 				/>
+				{errors.email && <span>{errors.email.message}</span>}
 				<input
 					type='password'
+					name='password'
 					placeholder='Пароль...'
-					{...register('password', {
-						onChange: () => {},
-					})}
+					{...register('password')}
 				/>
+				{errors.password && <span>{errors.password.message}</span>}
 				<Button
 					height='50px'
 					width='200px'
 					type='submit'>
-					Авторизоваться
+					Войти
 				</Button>
-				{/* {errorMessage && <AuthFormError>{errorMessage}</AuthFormError>} */}
+				{errorMessage && <span>{errorMessage}</span>}{' '}
 			</form>
 		</div>
 	)
@@ -95,5 +107,9 @@ export const Login = styled(LoginContainer)`
 		height: 300px;
 		justify-content: center;
 		box-shadow: 0px 0px 15px 2px rgba(0, 0, 0, 0.2);
+	}
+
+	span {
+		color: red;
 	}
 `
